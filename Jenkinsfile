@@ -14,9 +14,11 @@ podTemplate(containers: [
                     checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/benjfranklin/kubernetes-the-hard-way-vmware.git']])
                     sh '''
                         export ANSIBLE_HOST_KEY_CHECKING=False
-                        echo "${jenkins-sudo-password}" >> sudo_password
                     '''
-                    ansiblePlaybook(credentialsId: 'jenkins', hostKeyChecking: false, inventory: 'ansible/inventories/hosts', playbook: 'ansible/playbooks/test.yml', extraVars: [ansible_become_password: ${jenkins-sudo-password}])
+                    withCredentials([string(credentialsId: 'jenkins-sudo-password', variable: 'password')]) {
+                        ansiblePlaybook(credentialsId: 'jenkins', hostKeyChecking: false, inventory: 'ansible/inventories/hosts', playbook: 'ansible/playbooks/test.yml', extraVars: [ansible_become_password: $password])
+                    }
+                    
                 }
             }
         }
