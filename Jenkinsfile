@@ -17,7 +17,7 @@ podTemplate(containers: [
                         pwd
                         ls -la
                     '''
-                    ansiblePlaybook(credentialsId: 'jenkins', inventory: 'ansible/inventories/hosts', playbook: 'ansible/playbooks/test.yml')
+                    ansiblePlaybook(credentialsId: 'jenkins', hostKeyChecking: 'false', inventory: 'ansible/inventories/hosts', playbook: 'ansible/playbooks/test.yml')
                 }
             }
         }
