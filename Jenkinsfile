@@ -1,7 +1,7 @@
 podTemplate(containers: [
     containerTemplate(
         name: 'ansible', 
-        image: 'benjfranklin/jenkins-agent-ansible:1.2',
+        image: 'benjfranklin/jenkins-agent-ansible:1.4',
         command: 'sleep', 
         args: '5m'
         )
@@ -11,13 +11,16 @@ podTemplate(containers: [
         stage('Testing Ansible Agent') {
             container('ansible') {
                 stage('Run ansible') {
-                    git 'https://github.com/benjfranklin/kubernetes-the-hard-way-vmware.git'
-                    sh '''
-                        whoami
-                        pwd
-                        ls -la
-                    '''
-                    ansiblePlaybook(credentialsId: 'jenkins', inventory: 'ansible/inventories/hosts', playbook: 'ansible/playbooks/test.yml')
+                    steps {
+                        git 'https://github.com/benjfranklin/kubernetes-the-hard-way-vmware.git'
+                        sh '''
+                            whoami
+                            pwd
+                            ls -la
+                        '''
+                        sh 'kubernetes-the-hard-way-vmware'
+                        ansiblePlaybook(credentialsId: 'jenkins', inventory: 'kubernetes-the-hard-way-vmware/ansible/inventories/hosts', playbook: 'ansible/playbooks/test.yml')
+                    }
                 }
             }
         }
