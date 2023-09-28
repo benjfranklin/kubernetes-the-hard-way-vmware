@@ -11,7 +11,7 @@ podTemplate(containers: [
         stage('Testing Ansible Agent') {
             container('ansible') {
                 stage('Run ansible') {
-                    git 'https://github.com/benjfranklin/kubernetes-the-hard-way-vmware.git'
+                    checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/benjfranklin/kubernetes-the-hard-way-vmware.git']])
                     sh '''
                         whoami
                         pwd
