@@ -8,15 +8,18 @@ podTemplate(containers: [
   ]) {
 
     node(POD_LABEL) {
-        stage('Shell Commands') {
+        stage('Testing Ansible Agent') {
+            container('ansible') {
+                stage('Git Clone') {
+                    git 'https://github.com/benjfranklin/kubernetes-the-hard-way-vmware.git'
+                }
+                stage('Shell Commands') {
                     sh '''
                         whoami
                         pwd
                         ls -la
                     '''
-        }
-        stage('Testing Ansible Agent') {
-            container('ansible') {
+                }
                 stage('Run ansible') {
                     ansiblePlaybook(credentialsId: 'jenkins', inventory: 'ansible/inventories/hosts', playbook: 'ansible/playbooks/test.yml')
                 }
