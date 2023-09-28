@@ -17,7 +17,7 @@ podTemplate(containers: [
                         pwd
                         ls -la
                     '''
-                    ansiblePlaybook(credentialsId: 'jenkins', inventory: 'kubernetes-the-hard-way-vmware/ansible/inventories/hosts', playbook: 'ansible/playbooks/test.yml')
+                    ansiblePlaybook(credentialsId: 'jenkins', inventory: 'ansible/inventories/hosts', playbook: 'ansible/playbooks/test.yml')
                 }
             }
         }
