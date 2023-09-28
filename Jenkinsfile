@@ -8,6 +8,13 @@ podTemplate(containers: [
   ]) {
 
     node(POD_LABEL) {
+        stage('Shell Commands') {
+                    sh '''
+                        whoami
+                        pwd
+                        ls -la
+                    '''
+        }
         stage('Testing Ansible Agent') {
             container('ansible') {
                 stage('Run ansible') {
