@@ -13,9 +13,7 @@ podTemplate(containers: [
                 stage('Run ansible') {
                     checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/benjfranklin/kubernetes-the-hard-way-vmware.git']])
                     sh '''
-                        whoami
-                        pwd
-                        ls -la
+                        export ANSIBLE_HOST_KEY_CHECKING=False
                     '''
                     ansiblePlaybook(credentialsId: 'jenkins', hostKeyChecking: false, inventory: 'ansible/inventories/hosts', playbook: 'ansible/playbooks/test.yml')
                 }
