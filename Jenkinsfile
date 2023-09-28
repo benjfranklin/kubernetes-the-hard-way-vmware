@@ -16,7 +16,7 @@ podTemplate(containers: [
                         export ANSIBLE_HOST_KEY_CHECKING=False
                         echo "${jenkins-sudo-password}" >> sudo_password
                     '''
-                    ansiblePlaybook(credentialsId: 'jenkins', hostKeyChecking: false, inventory: 'ansible/inventories/hosts', playbook: 'ansible/playbooks/test.yml', extraVars: [ansible_become_password: "${jenkins-sudo-password}"])
+                    ansiblePlaybook(credentialsId: 'jenkins', hostKeyChecking: false, inventory: 'ansible/inventories/hosts', playbook: 'ansible/playbooks/test.yml', extraVars: [ansible_become_password: ${jenkins-sudo-password}])
                 }
             }
         }
