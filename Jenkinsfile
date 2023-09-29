@@ -8,15 +8,15 @@ podTemplate(containers: [
   ]) {
 
     node(POD_LABEL) {
-        stage('Testing Ansible Agent') {
+        stage('Configure kubernetes nodes') {
             container('ansible') {
-                stage('Run ansible') {
+                stage('Configure kubernetes master node') {
                     checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/benjfranklin/kubernetes-the-hard-way-vmware.git']])
                     sh '''
                         echo "nothing to see here..."
                     '''
                     withCredentials([string(credentialsId: 'jenkins-sudo-password', variable: 'password')]) {
-                        ansiblePlaybook(credentialsId: 'jenkins', hostKeyChecking: false, inventory: 'ansible/inventories/hosts', playbook: 'ansible/playbooks/test.yml', extraVars: [ansible_become_password: '$password'])
+                        ansiblePlaybook(credentialsId: 'jenkins', hostKeyChecking: false, inventory: 'ansible/inventories/hosts', playbook: 'ansible/playbooks/k8s-master.yml', extraVars: [ansible_become_password: '$password'])
                     }
                     
                 }
