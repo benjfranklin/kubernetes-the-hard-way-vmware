@@ -1,0 +1,12 @@
+---
+
+- hosts: master
+  become: true
+  tasks:
+    - name: Update apt and install packages
+      apt:
+        pkg:
+          - net-tools
+        state: latest
+        update_cache: true
+ 
