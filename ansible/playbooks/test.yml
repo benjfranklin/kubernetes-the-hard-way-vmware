@@ -1,5 +1,5 @@
-# This playbook prints a simple debug message
-- hosts: webservers
+---
+- hosts: gateways
   become: true
   tasks:
     - name: Update apt and install packages
@@ -11,3 +11,49 @@
           - unzip
         state: latest
         update_cache: true
+    - name: Copy /etc/dhcp/dhcpd.conf
+      copy:
+        src: ./files/dhcpd.conf
+        dest: /etc/dhcp/dhcpd.conf
+        backup: no
+    - name: Copy /etc/default/isc-dhcp-server
+      copy:
+        src: ./files/isc-dhcp-server
+        dest: /etc/default/isc-dhcp-server
+        backup: no
+    - name: Restart DHCP server
+      shell:
+        "systemctl restart isc-dhcp-server.service"
+    - name: Copy /etc/sysctl.conf
+      copy:
+        src: ./files/sysctl.conf
+        dest: /etc/sysctl.conf
+        backup: yes
+    - name: Enable IP forwarding
+      shell:
+        "sysctl -p"
+    - name: Copy /etc/iptables/rules.v4
+      copy:
+        src: ./files/iptables-rules-v4
+        dest: /etc/iptables/rules.v4
+        backup: yes
+    - name: Copy /etc/default/openvpn
+      copy:
+        src: ./files/openvpn/openvpn-default
+        dest: /etc/default/openvpn
+    - name: Copy OpenVPN server configuration file
+      copy:
+        src: ./files/openvpn/servers/hu-bud.prod.surfshark.com_tcp.ovpn
+        dest: /etc/openvpn/client.conf
+    - name: Copy OpenVPN password file
+      copy:
+        src: ./files/openvpn/openvpn-pass
+      - name: Change OpenVPN password file permissions
+      shell:
+        "chmod 400 /etc/openvpn/pass"
+    - name: Install OpenVPN service
+      shell:
+        "systemctl enable openvpn@client.service && systemctl daemon-reload"
+    - name: Retart OpenVPN service
+      shell:
+        "service openvpn@client restart"
