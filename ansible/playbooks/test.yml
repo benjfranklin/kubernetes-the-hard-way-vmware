@@ -47,7 +47,7 @@
     - name: Copy OpenVPN password file
       copy:
         src: ./files/openvpn/openvpn-pass
-      - name: Change OpenVPN password file permissions
+    - name: Change OpenVPN password file permissions
       shell:
         "chmod 400 /etc/openvpn/pass"
     - name: Install OpenVPN service
