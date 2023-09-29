@@ -1,4 +1,3 @@
----
 - hosts: gateways
   become: true
   tasks:
