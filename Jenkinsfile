@@ -26,19 +26,25 @@ podTemplate(containers: [
 
                 stage('Apply common configurations') {
                     withCredentials([string(credentialsId: 'jenkins-sudo-password', variable: 'password')]) {
-                        ansiblePlaybook(credentialsId: 'jenkins', hostKeyChecking: false, inventory: 'ansible/inventories/hosts', playbook: 'ansible/playbooks/k8s-all-nodes.yml', extraVars: [ansible_become_password: '$password'])
+                        wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
+                            ansiblePlaybook(credentialsId: 'jenkins', hostKeyChecking: false, inventory: 'ansible/inventories/hosts', playbook: 'ansible/playbooks/k8s-all-nodes.yml', extraVars: [ansible_become_password: '$password'])
+                        }
                     } 
                 }
                 
                 stage('Configure kubernetes master node') {
                     withCredentials([string(credentialsId: 'jenkins-sudo-password', variable: 'password')]) {
-                        ansiblePlaybook(credentialsId: 'jenkins', hostKeyChecking: false, inventory: 'ansible/inventories/hosts', playbook: 'ansible/playbooks/k8s-master.yml', extraVars: [ansible_become_password: '$password'])
+                        wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
+                            ansiblePlaybook(credentialsId: 'jenkins', hostKeyChecking: false, inventory: 'ansible/inventories/hosts', playbook: 'ansible/playbooks/k8s-master.yml', extraVars: [ansible_become_password: '$password'])
+                        }
                     } 
                 }
 
                 stage('Configure kubernetes worker nodes') {
                     withCredentials([string(credentialsId: 'jenkins-sudo-password', variable: 'password')]) {
-                        ansiblePlaybook(credentialsId: 'jenkins', hostKeyChecking: false, inventory: 'ansible/inventories/hosts', playbook: 'ansible/playbooks/k8s-workers.yml', extraVars: [ansible_become_password: '$password'])
+                        wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
+                            ansiblePlaybook(credentialsId: 'jenkins', hostKeyChecking: false, inventory: 'ansible/inventories/hosts', playbook: 'ansible/playbooks/k8s-workers.yml', extraVars: [ansible_become_password: '$password'])
+                        }
                     } 
                 }
                 
