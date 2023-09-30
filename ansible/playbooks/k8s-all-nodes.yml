@@ -43,14 +43,19 @@
         path: "/etc/ssl/private/{{ inventory_hostname }}.pem"
       when: not cert_private_key.stat.exists
 
+    - name: Create /etc/ssl/csr directory
+      file: 
+        state: directory
+        path: "/etc/ssl/csr/{{ inventory_hostname }}.req"
+
     - name: Check local certificate signing request exists
       stat:
-        path: "/etc/ssl/csr/{{ inventory_hostname }}.csr"
+        path: "/etc/ssl/csr/{{ inventory_hostname }}.req"
       register: cert_csr
 
     - name: Generate an OpenSSL Certificate Signing Request
       community.crypto.openssl_csr:
-        path: "/etc/ssl/csr/{{ inventory_hostname }}.csr"
+        path: "/etc/ssl/csr/{{ inventory_hostname }}.req"
         privatekey_path: "/etc/ssl/private/{{ inventory_hostname }}.pem"
         common_name: "{{ inventory_hostname }}"
       when: not cert_csr.stat.exists
