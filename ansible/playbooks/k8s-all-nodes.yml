@@ -21,6 +21,7 @@
        - { Host: '192.168.70.131  k8s-worker1.vmware.local'}
        - { Host: '192.168.70.132  k8s-worker2.vmware.local'}
 
+    # Configure certificates
     - name: Check local certs directory exists
       file: state=directory path=/usr/local/share/ca-certificates
 
@@ -29,4 +30,6 @@
 
     - name: Update CA certificate index
       shell: /usr/sbin/update-ca-certificates
+
+    
  

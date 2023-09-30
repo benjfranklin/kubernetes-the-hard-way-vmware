@@ -5,5 +5,15 @@
   tasks:
   
     - name: Check EasyRSA CA certificate exists
-      file: path=/usr/local/share/ca-certificates/EasyRSAca.crt
+      file: 
+        path: /usr/local/share/ca-certificates/EasyRSAca.crt
  
+    - name: Check local certificate private key exists
+      stat:
+        path: "/etc/ssl/private/{{ lookup('env','HOSTNAME') }}.pem"
+      register: private_key
+    
+    - name: Generate an OpenSSL private key with the default values (4096 bits, RSA)
+      community.crypto.openssl_privatekey:
+        path: "/etc/ssl/private/{{ lookup('env','HOSTNAME') }}.pem"
+      when: not private_key.stat.exists
