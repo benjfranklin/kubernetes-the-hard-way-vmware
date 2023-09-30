@@ -10,10 +10,10 @@
  
     - name: Check local certificate private key exists
       stat:
-        path: "/etc/ssl/private/{{ lookup('env','HOSTNAME') }}.pem"
+        path: "/etc/ssl/private/{{ inventory_hostname }}.pem"
       register: private_key
     
     - name: Generate an OpenSSL private key with the default values (4096 bits, RSA)
       community.crypto.openssl_privatekey:
-        path: "/etc/ssl/private/{{ lookup('env','HOSTNAME') }}.pem"
+        path: "/etc/ssl/private/{{ inventory_hostname }}.pem"
       when: not private_key.stat.exists
