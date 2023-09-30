@@ -44,7 +44,7 @@
       fetch: 
         src: "/etc/ssl/csr/{{ inventory_hostname_short }}-admin.req"
         dest: "files/certificates/{{ inventory_hostname_short }}-admin.req"
-      when: certs_admin_csr_new.stat.exists
+      when: certs_admin_csr_new
 
 - hosts: ca
   become: false
@@ -54,4 +54,4 @@
       copy:
         src: "/etc/ssl/csr/{{ hostvars['master']['hostname'] }}-admin.req"
         dest: "requests/{{ hostvars['master']['hostname'] }}-admin.req"
-      when: hostvars['master']['certs_admin_csr_new.stat.exists']
+      when: hostvars['master']['certs_admin_csr_new']
