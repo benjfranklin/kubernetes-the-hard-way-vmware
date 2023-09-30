@@ -1,6 +1,8 @@
 ---
 
 - hosts: master
+  vars:
+    hostname: "{{ inventory_hostname_short }}"
   become: true
   tasks:
   
@@ -35,5 +37,21 @@
         privatekey_path: "/etc/ssl/private/{{ inventory_hostname_short }}-admin.pem"
         common_name: admin
         organization_name: system:masters
-
       when: not certs_admin_csr.stat.exists
+      register: certs_admin_csr_new
+
+    - name: Fetch the admin client Certificate Signing Request
+       fetch: 
+        src: "/etc/ssl/csr/{{ inventory_hostname_short }}-admin.req"
+        dest: "files/certificates/{{ inventory_hostname_short }}-admin.req"
+       when: certs_admin_csr_new.stat.exists
+
+- hosts: ca
+  become: false
+  tasks:
+
+    - name: Transfer the admin client Certificate Signing Request to CA
+      copy:
+        src: "/etc/ssl/csr/{{ hostvars['master']['hostname'] }}-admin.req"
+        dest: "requests/{{ hostvars['master']['hostname'] }}-admin.req"
+      when: hostvars['master']['certs_admin_csr_new.stat.exists']

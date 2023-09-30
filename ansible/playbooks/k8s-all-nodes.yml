@@ -17,9 +17,10 @@
         line: '{{item.Host}}'
         state: present  
       with_items:
-       - { Host: '192.168.70.130  k8s-master.vmware.local'}
-       - { Host: '192.168.70.131  k8s-worker1.vmware.local'}
-       - { Host: '192.168.70.132  k8s-worker2.vmware.local'}
+        - { Host: '192.168.0.35  rpi0'}
+        - { Host: '192.168.70.130  k8s-master.vmware.local'}
+        - { Host: '192.168.70.131  k8s-worker1.vmware.local'}
+        - { Host: '192.168.70.132  k8s-worker2.vmware.local'}
 
     # Configure certificates
     - name: Check local certs directory exists
