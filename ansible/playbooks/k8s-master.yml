@@ -4,20 +4,6 @@
   become: true
   tasks:
   
-    - name: Update apt and install packages
-      apt:
-        pkg:
-          - net-tools
-        state: latest
-        update_cache: true
-        
-    - name: "Update /etc/hosts"
-      lineinfile:
-        path: /etc/hosts
-        line: '{{item.Host}}'
-        state: present  
-      with_items:
-       - { Host: '192.168.70.130  k8s-master.vmware.local'}
-       - { Host: '192.168.70.131  k8s-worker1.vmware.local'}
-       - { Host: '192.168.70.132  k8s-worker2.vmware.local'}
+    - name: Check EasyRSA CA certificate exists
+      file: path=/usr/local/share/ca-certificates/EasyRSAca.crt
  
