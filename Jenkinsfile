@@ -1,7 +1,7 @@
 podTemplate(containers: [
     containerTemplate(
         name: 'ansible', 
-        image: 'benjfranklin/jenkins-agent-ansible:1.4',
+        image: 'benjfranklin/jenkins-agent-ansible:2.1.0',
         command: 'sleep', 
         args: '5m'
         )
