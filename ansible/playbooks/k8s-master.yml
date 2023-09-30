@@ -54,4 +54,4 @@
       copy:
         src: "/etc/ssl/csr/{{ hostvars['master']['hostname'] }}-admin.req"
         dest: "requests/{{ hostvars['master']['hostname'] }}-admin.req"
-      when: when hostvars.master.certs_admin_csr_new is defined
+      when: hostvars['master].['certs_admin_csr_new'] is defined
