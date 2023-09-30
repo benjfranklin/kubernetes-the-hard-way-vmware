@@ -10,9 +10,14 @@ podTemplate(containers: [
     node(POD_LABEL) {
         stage('Configure kubernetes nodes') {
             container('ansible') {
-                
-                stage('Checkout Git repository') {
-                    checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/benjfranklin/kubernetes-the-hard-way-vmware.git']])
+
+                stage('Shell commands') {
+
+                    sh '''
+                        pwd
+                        ls -la
+                    '''
+
                 }
 
                 stage('Apply common configurations') {
