@@ -8,4 +8,32 @@
       file: 
         path: /usr/local/share/ca-certificates/EasyRSAca.crt
  
+    # Kubernetes Admin client certificate configuration
+    - name: Check admin client private key exists
+      stat:
+        path: "/etc/ssl/private/{{ inventory_hostname_short }}-admin.pem"
+      register: certs_admin_private_key
     
+    - name: Generate Admin private key with the default values (4096 bits, RSA)
+      community.crypto.openssl_privatekey:
+        path: "/etc/ssl/private/{{ inventory_hostname_short }}-admin.pem"
+      when: not certs_admin_private_key.stat.exists
+
+    - name: Create /etc/ssl/csr directory
+      file: 
+        state: directory
+        path: /etc/ssl/csr
+
+    - name: Check admin client certificate signing request exists
+      stat:
+        path: "/etc/ssl/csr/{{ inventory_hostname_short }}-admin.req"
+      register: certs_admin_csr
+
+    - name: Generate an admin client Certificate Signing Request
+      community.crypto.openssl_csr:
+        path: "/etc/ssl/csr/{{ inventory_hostname_short }}-admin.req"
+        privatekey_path: "/etc/ssl/private/{{ inventory_hostname_short }}-admin.pem"
+        common_name: admin
+        organization_name: system:masters
+
+      when: not certs_admin_csr.stat.exists
