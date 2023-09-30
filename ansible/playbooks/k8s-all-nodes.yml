@@ -26,10 +26,34 @@
       file: state=directory path=/usr/local/share/ca-certificates
 
     - name: Install EasyRSA CA certificate
-      copy: src=files/certificates/ca.crt dest=/usr/local/share/ca-certificates/EasyRSAca.crt
+      copy: 
+        src: files/certificates/ca.crt 
+        dest: /usr/local/share/ca-certificates/EasyRSAca.crt
 
     - name: Update CA certificate index
       shell: /usr/sbin/update-ca-certificates
+
+    - name: Check local certificate private key exists
+      stat:
+        path: "/etc/ssl/private/{{ inventory_hostname }}.pem"
+      register: cert_private_key
+    
+    - name: Generate an OpenSSL private key with the default values (4096 bits, RSA)
+      community.crypto.openssl_privatekey:
+        path: "/etc/ssl/private/{{ inventory_hostname }}.pem"
+      when: not cert_private_key.stat.exists
+
+    - name: Check local certificate signing request exists
+      stat:
+        path: "/etc/ssl/csr/{{ inventory_hostname }}.csr"
+      register: cert_csr
+
+    - name: Generate an OpenSSL Certificate Signing Request
+      community.crypto.openssl_csr:
+        path: "/etc/ssl/csr/{{ inventory_hostname }}.csr"
+        privatekey_path: "/etc/ssl/private/{{ inventory_hostname }}.pem"
+        common_name: "{{ inventory_hostname }}"
+      when: not cert_csr.stat.exists
 
     
  
