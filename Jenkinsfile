@@ -4,7 +4,10 @@ pipeline {
   }
   
   // pipeline goes here
-  podTemplate(containers: [
+  
+}
+
+podTemplate(containers: [
     containerTemplate(
         name: 'ansible', 
         image: 'benjfranklin/jenkins-agent-ansible:1.4',
@@ -13,49 +16,44 @@ pipeline {
         )
   ]) {
 
-        node(POD_LABEL) {
-            wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
-                stage('Configure kubernetes nodes') {
-                    container('ansible') {
+    node(POD_LABEL) {
+        stage('Configure kubernetes nodes') {
+            container('ansible') {
 
-                        stage('Shell commands') {
+                stage('Shell commands') {
 
-                            sh '''
-                                pwd
-                                ls -la
-                            '''
+                    sh '''
+                        pwd
+                        ls -la
+                    '''
 
-                        }
-
-                        stage('Checkout Git repository') {
-                            checkout scmGit(branches: [[name: env.BRANCH_NAME]], extensions: [], userRemoteConfigs: [[url: 'https://github.com/benjfranklin/kubernetes-the-hard-way-vmware.git']])
-                        }
-
-                        stage('Apply common configurations') {
-                            withCredentials([string(credentialsId: 'jenkins-sudo-password', variable: 'password')]) {
-                                ansiblePlaybook(credentialsId: 'jenkins', hostKeyChecking: false, inventory: 'ansible/inventories/hosts', playbook: 'ansible/playbooks/k8s-all-nodes.yml', extraVars: [ansible_become_password: '$password'])
-                            } 
-                        }
-                        
-                        stage('Configure kubernetes master node') {
-                            withCredentials([string(credentialsId: 'jenkins-sudo-password', variable: 'password')]) {
-                                ansiblePlaybook(credentialsId: 'jenkins', hostKeyChecking: false, inventory: 'ansible/inventories/hosts', playbook: 'ansible/playbooks/k8s-master.yml', extraVars: [ansible_become_password: '$password'])
-                            } 
-                        }
-
-                        stage('Configure kubernetes worker nodes') {
-                            withCredentials([string(credentialsId: 'jenkins-sudo-password', variable: 'password')]) {
-                                ansiblePlaybook(credentialsId: 'jenkins', hostKeyChecking: false, inventory: 'ansible/inventories/hosts', playbook: 'ansible/playbooks/k8s-workers.yml', extraVars: [ansible_become_password: '$password'])
-                            } 
-                        }
-                        
-                    }
                 }
+
+                stage('Checkout Git repository') {
+                    checkout scmGit(branches: [[name: env.BRANCH_NAME]], extensions: [], userRemoteConfigs: [[url: 'https://github.com/benjfranklin/kubernetes-the-hard-way-vmware.git']])
+                }
+
+                stage('Apply common configurations') {
+                    withCredentials([string(credentialsId: 'jenkins-sudo-password', variable: 'password')]) {
+                        ansiblePlaybook(credentialsId: 'jenkins', hostKeyChecking: false, inventory: 'ansible/inventories/hosts', playbook: 'ansible/playbooks/k8s-all-nodes.yml', extraVars: [ansible_become_password: '$password'])
+                    } 
+                }
+                
+                stage('Configure kubernetes master node') {
+                    withCredentials([string(credentialsId: 'jenkins-sudo-password', variable: 'password')]) {
+                        ansiblePlaybook(credentialsId: 'jenkins', hostKeyChecking: false, inventory: 'ansible/inventories/hosts', playbook: 'ansible/playbooks/k8s-master.yml', extraVars: [ansible_become_password: '$password'])
+                    } 
+                }
+
+                stage('Configure kubernetes worker nodes') {
+                    withCredentials([string(credentialsId: 'jenkins-sudo-password', variable: 'password')]) {
+                        ansiblePlaybook(credentialsId: 'jenkins', hostKeyChecking: false, inventory: 'ansible/inventories/hosts', playbook: 'ansible/playbooks/k8s-workers.yml', extraVars: [ansible_become_password: '$password'])
+                    } 
+                }
+                
             }
-
         }
+
+
     }
-  
 }
-
-
