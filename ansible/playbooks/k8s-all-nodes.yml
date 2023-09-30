@@ -46,7 +46,7 @@
     - name: Create /etc/ssl/csr directory
       file: 
         state: directory
-        path: "/etc/ssl/csr/{{ inventory_hostname }}.req"
+        path: /etc/ssl/csr
 
     - name: Check local certificate signing request exists
       stat:
