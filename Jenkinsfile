@@ -1,12 +1,3 @@
-pipeline {
-  options {
-    ansiColor('xterm')
-  }
-  
-  // pipeline goes here
-  
-}
-
 podTemplate(containers: [
     containerTemplate(
         name: 'ansible', 
